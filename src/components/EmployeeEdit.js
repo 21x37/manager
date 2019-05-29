@@ -1,29 +1,31 @@
 import React from 'react';
-import { Picker, Text } from 'react-native';
+import _ from 'lodash';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import { Card, CardSection, Input, Button } from './common';
 import EmployeeForm from './EmployeeForm';
+import * as actions from '../actions';
+import { Card, CardSection, Button } from './common';
 
-class EmployeeCreate extends React.Component {
+class EmployeeEdit extends React.Component {
     constructor(props) {
         super(props);
 
         this.onButtonPress = this.onButtonPress.bind(this);
     }
+    componentWillMount() {
+        _.each(this.props.employee, (value, prop) => {
+            this.props.employeeUpdate({ prop, value });
+        });
+    }
     onButtonPress() {
-        const { name, phone , shift } = this.props;
-
-        // If the user never selects a shift then the default selection is Monday. 🙈
-        this.props.employeeCreate({ name, phone, shift: shift || 'Monday' })
+        console.log(this.props.name, this.props.phone, this.props.shift);
     }
     render() {
         return (
             <Card>
-                <EmployeeForm {...this.props} />
+                <EmployeeForm/>
                 <CardSection>
                     <Button onPress={this.onButtonPress}>
-                        Create
+                        Save Changes
                     </Button>
                 </CardSection>
             </Card>
@@ -31,12 +33,10 @@ class EmployeeCreate extends React.Component {
     };
 };
 
-
-
 const mapStateToProps = (state) => ({
     name: state.employeeForm.name,
     phone: state.employeeForm.phone,
     shift: state.employeeForm.shift
 })
 
-export default connect(mapStateToProps, actions)(EmployeeCreate);
+export default connect(mapStateToProps, actions)(EmployeeEdit);
